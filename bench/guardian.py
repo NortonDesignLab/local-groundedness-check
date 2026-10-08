@@ -2,7 +2,7 @@
 import json, math, os, re, time, urllib.request
 
 # llama.cpp server hosting Granite Guardian; override with GUARDIAN_URL=http://host:port
-URL = os.environ.get("GUARDIAN_URL", "http://10.0.0.153:8014").rstrip("/") + "/v1/chat/completions"
+URL = os.environ.get("GUARDIAN_URL", "http://10.0.0.121:8014").rstrip("/") + "/v1/chat/completions"
 MODEL = "granite-guardian-4.1-8b"
 
 GUARDIAN_JUDGE_THINK = (

@@ -16,7 +16,7 @@ def call(text, think, grammar):
     if grammar: body["grammar"]=grammar
     t0=time.time()
     r=json.loads(urllib.request.urlopen(urllib.request.Request(
-        "http://10.0.0.153:8014/v1/chat/completions",data=json.dumps(body).encode(),
+        "http://10.0.0.121:8014/v1/chat/completions",data=json.dumps(body).encode(),
         headers={"content-type":"application/json"}),timeout=300).read())
     return r["choices"][0]["message"]["content"], round(time.time()-t0,2)
 

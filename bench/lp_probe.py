@@ -10,7 +10,7 @@ for name, ans in [("faithful","Study 1 had 32 students, 16 women and 16 men."),
           "chat_template_kwargs":{"documents":DOC},
           "logprobs":True,"top_logprobs":20}
     r=json.loads(urllib.request.urlopen(urllib.request.Request(
-        "http://10.0.0.153:8014/v1/chat/completions",data=json.dumps(body).encode(),
+        "http://10.0.0.121:8014/v1/chat/completions",data=json.dumps(body).encode(),
         headers={"content-type":"application/json"}),timeout=120).read())
     ch=r["choices"][0]
     print("==",name,"|",repr(ch["message"]["content"]))

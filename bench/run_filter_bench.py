@@ -11,7 +11,7 @@ SAMPLE = [json.loads(l) for l in open("sample.jsonl")]
 
 def run(tag, include_question):
     f = gsc.Filter()
-    f.valves.guardian_url = "http://10.0.0.153:8014"
+    f.valves.guardian_url = "http://10.0.0.121:8014"
     f.valves.include_question = include_question
     out = f"results_filter_{tag}.jsonl"
     done = set()

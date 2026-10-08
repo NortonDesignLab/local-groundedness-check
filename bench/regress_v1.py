@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import pathlib
 sp=importlib.util.spec_from_file_location("gsc", str(pathlib.Path(__file__).resolve().parent.parent/"openwebui"/"guardian_source_check.py"))
 g=importlib.util.module_from_spec(sp); sp.loader.exec_module(g)
-f=g.Filter(); f.valves.guardian_url="http://10.0.0.153:8014"; f.valves.lettuce_url="http://10.0.0.72:8077"
+f=g.Filter(); f.valves.guardian_url="http://10.0.0.121:8014"; f.valves.lettuce_url="http://10.0.0.72:8077"
 f.valves.rerank_url="http://localhost:8013"
 
 S=[json.loads(l) for l in open("sample.jsonl")]

@@ -1,7 +1,7 @@
 """
 title: Guardian Source Check
 author: Norton Design Lab
-version: 1.3.1
+version: 1.3.2
 license: MIT
 description: After each answer, checks every factual sentence against the passages retrieved in the conversation (knowledge / RAG sources, tool results, long pasted text). LettuceDetect v2 screens every sentence for recall, then IBM Granite Guardian adjudicates only what LettuceDetect flagged, which cuts false flags without adding much latency. Appends a short source-check note. Flags only, never edits the answer. Nothing leaves the machine.
 requirements: requests
@@ -204,8 +204,8 @@ class Filter:
     class Valves(BaseModel):
         priority: int = Field(default=10, description="Filter order; higher runs later.")
         guardian_url: str = Field(
-            default="http://192.168.100.2:8014",
-            description="Granite Guardian judge (llama.cpp on the DGX Spark, port 8014) reached over the ATOM<->Spark direct link; from SARA/LAN use http://10.0.0.153:8014.",
+            default="http://10.0.0.121:8014",
+            description="Granite Guardian judge (llama.cpp on SARA's RTX 5090, host port 8014) by SARA's LAN address, which is what the Open WebUI container on the ATOM can reach; on SARA itself http://localhost:8014 also works.",
         )
         max_claims: int = Field(default=25, description="Most sentences checked per answer (about 0.25 s each).")
         context_chars: int = Field(default=12000, description="Characters of the best-matching passages shown to the judge per sentence.")

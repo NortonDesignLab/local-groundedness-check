@@ -15,7 +15,7 @@ pip install pandas pyarrow numpy scikit-learn requests
 Point the adapters at your servers (defaults are my LAN):
 
 ```bash
-export GUARDIAN_URL=http://10.0.0.153:8014      # llama.cpp, Granite Guardian 4.1-8B
+export GUARDIAN_URL=http://10.0.0.121:8014      # llama.cpp, Granite Guardian 4.1-8B
 export LETTUCE_URL=http://10.0.0.72:8077        # vLLM, LettuceDetect v2
 export QWEN_URL=http://10.0.0.72:8000 QWEN_MODEL=local   # any general model, optional
 ```

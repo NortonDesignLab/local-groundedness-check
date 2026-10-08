@@ -1,6 +1,6 @@
 import json,urllib.request
 def post(path, body):
-    req=urllib.request.Request("http://10.0.0.153:8014"+path, data=json.dumps(body).encode(),
+    req=urllib.request.Request("http://10.0.0.121:8014"+path, data=json.dumps(body).encode(),
                                headers={"content-type":"application/json"})
     return json.loads(urllib.request.urlopen(req,timeout=60).read())
 

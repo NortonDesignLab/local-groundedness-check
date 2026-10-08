@@ -26,7 +26,7 @@ Usage
   python tools/check_claims.py claims.json --qwen --json out.json
 
 Environment
-  GUARDIAN_URL  llama.cpp server hosting Guardian   (default http://10.0.0.153:8014)
+  GUARDIAN_URL  llama.cpp server hosting Guardian   (default http://10.0.0.121:8014)
   LETTUCE_URL   vLLM server hosting LettuceDetect   (default http://10.0.0.72:8077)
   QWEN_URL / QWEN_MODEL   any OpenAI-compatible general model (default http://10.0.0.72:8000, "local")
 
@@ -38,7 +38,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-GUARDIAN_URL = os.environ.get("GUARDIAN_URL", "http://10.0.0.153:8014").rstrip("/")
+GUARDIAN_URL = os.environ.get("GUARDIAN_URL", "http://10.0.0.121:8014").rstrip("/")
 LETTUCE_URL = os.environ.get("LETTUCE_URL", "http://10.0.0.72:8077").rstrip("/")
 LETTUCE_MODEL = os.environ.get("LETTUCE_MODEL", "KRLabsOrg/lettucedect-v2-qwen-2b")
 QWEN_URL = os.environ.get("QWEN_URL", "http://10.0.0.72:8000").rstrip("/")

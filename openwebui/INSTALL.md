@@ -29,12 +29,12 @@ The defaults are my LAN. From inside the Open WebUI container the detectors must
 the address you put in the valve, so test from inside the container, not from the host:
 
 ```bash
-docker exec open-webui python3 -c "import urllib.request; print(urllib.request.urlopen('http://10.0.0.153:8014/v1/models', timeout=6).status)"
+docker exec open-webui python3 -c "import urllib.request; print(urllib.request.urlopen('http://10.0.0.121:8014/v1/models', timeout=6).status)"
 ```
 
 | Valve | What it is | My value |
 |---|---|---|
-| `guardian_url` | llama.cpp server with Granite Guardian | `http://10.0.0.153:8014` (DGX Spark) |
+| `guardian_url` | llama.cpp server with Granite Guardian | `http://10.0.0.121:8014` (SARA, RTX 5090) |
 | `lettuce_url` | vLLM server with LettuceDetect v2 | `http://10.0.0.72:8077` |
 | `qwen_url` / `qwen_model` | any general OpenAI-compatible model for the second vote | `http://10.0.0.72:8000`, `local` |
 | `prefilter` + `guardian_think` | the two evidence-backed settings; **move them together** | both on |

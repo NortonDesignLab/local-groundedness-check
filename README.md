@@ -39,7 +39,7 @@ re-measured before being quoted as current.
                  └───────────────────────────────────────────────────────────────────────┘
         │ outlet filter (openwebui/guardian_source_check.py)
         ▼
-   sentences ──► LettuceDetect :8077 (screen) ──► Granite Guardian :8014 think (judge, DGX Spark)
+   sentences ──► LettuceDetect :8077 (screen) ──► Granite Guardian :8014 think (judge, RTX 5090)
                                                 ──► Qwen-27B :8000 (second vote, OR)
                                                 ──► orphan-number rule
         │
@@ -128,9 +128,9 @@ The rest is in [docs/GOTCHAS.md](docs/GOTCHAS.md).
 ## Hardware this runs on
 
 Two NVIDIA GB10 machines (128 GB unified each) and an x86 workstation with an RTX 5090 and an RTX
-3090. LettuceDetect, the router and the local LLM live on the first GB10; Guardian on the second
-(moved there from the 5090 when the ATOM needed it over a faster link than Wi-Fi); ChromaDB, the
-embedder and a reranker on the workstation. None of that is required: Guardian needs about 12 GB
+3090. LettuceDetect, the router and the local LLM live on the first GB10; Guardian on the workstation's
+RTX 5090 beside the embedder (it also ran on the second GB10 for a while, hence the Spark compose);
+ChromaDB and a reranker are on the workstation too. None of that is required: Guardian needs about 12 GB
 of GPU memory, LettuceDetect about 8 GB, and both speak the OpenAI chat API, so the endpoints in
 the valves and environment variables are the only coupling.
 
@@ -142,6 +142,6 @@ fetch it. The per-item result files are available on request for non-commercial 
 
 ## Status
 
-Live as of 8 October 2026: filter v1.3.1 installed on the Open WebUI instance, LettuceDetect up
-on the ATOM, Guardian on the DGX Spark (currently stopped while a 1M-context model holds the
-memory; `docker compose start` in its folder brings it back).
+Live as of 8 October 2026: filter v1.3.1 installed on the Open WebUI instance with its valve on the
+5090 copy, LettuceDetect up on the ATOM, Guardian on SARA's RTX 5090 (the Spark copy is stopped to
+leave memory for a 1M-context model). Verified that day: smoke test 5/5, example check 3/3 controls.

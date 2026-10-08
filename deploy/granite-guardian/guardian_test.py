@@ -1,5 +1,5 @@
 import json, os, re, time, urllib.request
-BASE = os.environ.get("GUARDIAN_URL", "http://10.0.0.153:8014").rstrip("/")
+BASE = os.environ.get("GUARDIAN_URL", "http://10.0.0.121:8014").rstrip("/")
 NOTHINK = ("<no-think>As a judge agent, assess whether the provided text meets the given judging criteria using all available information, "
            "including conversations, documents, and tools. Provide your score immediately without explanation. Output empty <think>\n</think> "
            "tags followed by your score in <score></score> tags.")
