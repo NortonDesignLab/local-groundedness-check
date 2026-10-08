@@ -74,34 +74,5 @@ def lettuce_arm(ex, timeout=300, retries=2):
     return {"ungrounded": None, "latency_s": None, "raw": f"ERROR: {last}", "n_spans": None}
 
 # ---------------- Jev / TypeSafe AI (hosted, needs early-access key) ----------------
-JEV_URL = os.environ.get("TYPESAFE_URL", "https://api.typesafe.ai/v1/systemone")
-JEV_KEY = os.environ.get("TYPESAFE_API_KEY")
-
-def jev_available():
-    return bool(JEV_KEY)
-
-def jev_arm(ex, timeout=120, retries=2):
-    """UNVERIFIED request shape - no early-access key on this machine, so this
-    adapter has never been executed against the real API. Schema follows the
-    launch post: unstructured state in, typed probabilistic decision out."""
-    if not JEV_KEY:
-        return {"ungrounded": None, "latency_s": None, "raw": "ERROR: no TYPESAFE_API_KEY"}
-    prompt = (f"Context (the only trusted evidence):\n{ex['passage']}\n\n"
-              f"Question: {ex['question']}\n\nAnswer: {ex['answer']}\n\n"
-              "Is the answer fully supported by the context?")
-    body = {"model": "jev-latest", "input": prompt,
-            "output_type": {"type": "enum", "values": ["grounded", "ungrounded"]}}
-    last = None
-    for a in range(retries + 1):
-        try:
-            t0 = time.time()
-            req = urllib.request.Request(JEV_URL, data=json.dumps(body).encode(),
-                                         headers={"content-type": "application/json",
-                                                  "authorization": f"Bearer {JEV_KEY}"})
-            r = json.loads(urllib.request.urlopen(req, timeout=timeout).read())
-            dt = time.time() - t0
-            return {"ungrounded": None, "latency_s": round(dt, 3), "raw": json.dumps(r)[:2000],
-                    "_needs_parser": True}
-        except Exception as e:
-            last = e; time.sleep(1 + 2 * a)
-    return {"ungrounded": None, "latency_s": None, "raw": f"ERROR: {last}"}
+# Adapter lives in arm_jev.py (documented request shape, never executed: no key on this machine).
+from arm_jev import jev_arm, available as jev_available  # noqa: E402

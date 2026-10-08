@@ -39,6 +39,7 @@ Then the follow-ups, in the order they were done:
 | `run_filter_bench.py` | does the real Open WebUI filter improve with the question turn? (yes, chi2 7.15) |
 | `run_conf.py` + `conf_analysis.py` | is Guardian's logprob confidence usable? (ranks, AUC 0.815; not calibrated) |
 | `arm_qwen.py` | a general 27B as a third judge (0.785 solo; best in OR with Guardian) |
+| `arm_jev.py` | Jev (TypeSafe AI) in the judge slot: documented request shape, access pending, never executed; `TYPESAFE_API_KEY` + `python arm_jev.py` fills `big_jev.jsonl` |
 | `injection_test.py` + `injection_analysis.py` | can poisoned passages flip the verdict? (1,760 calls, 5 attack styles) |
 | `retrieval.py`, `build_pools.py`, `retrieval_quality.py`, `retrieval_downstream.py` | keyword vs reranker vs embeddings for passage selection (better recall, flat accuracy) |
 | `numcheck.py` | deterministic orphan-number rule (precision 1.00 when density-gated) |

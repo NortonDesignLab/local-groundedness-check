@@ -21,10 +21,11 @@ figure (0.76 avg BAcc, think mode), which is the harness's sanity check.
 `POST https://api.typesafe.ai/v1/systemone` returns **HTTP 403** —
 `{"error_type":"authentication_error","message":"Must supply an API key!"}`. Jev is not on
 OpenRouter either (0 hits across 458 models), so the existing `OPENROUTER_API_KEY` is no route in.
-An adapter is written and wired into the harness (`arms.py:jev_arm`), reading `TYPESAFE_API_KEY`
-from the environment; its request shape follows the launch post but has **never been executed**, so
-treat it as a sketch until a key exists. With a key, `python run_bench.py jev` fills the last row
-against the identical 344 items.
+An adapter is written (`bench/arm_jev.py`, re-done 8 Oct 2026 against the published API reference:
+one `systemone` endpoint, a typed boolean question, a 0-to-1 answer), reading `TYPESAFE_API_KEY`
+from the environment. It has **never been executed**, so treat it as a sketch until a key exists.
+With a key, `python arm_jev.py` fills `big_jev.jsonl` over the identical 1094 items and
+`analyze_qwen_stock.py big_jev.jsonl` scores it in the same table.
 
 Note it would be measuring something the vendor does not claim: Jev's "can't hallucinate" is a
 guarantee that output *conforms to a type*, not that a claim is *supported by a source*. As a
