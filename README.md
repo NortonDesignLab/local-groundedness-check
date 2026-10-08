@@ -25,9 +25,9 @@ UI, and the export-time check I run on finished decks and memos.
 
 Every component was McNemar-tested against the configuration without it; two that looked good
 (GBNF grammar, reranker passage selection) were dropped when the measurement said no. Full write-up
-in [docs/BENCHMARK.md](docs/BENCHMARK.md). One caveat on the headline: the Qwen arm ran against an
-abliterated 27B checkpoint that has since been replaced by stock Qwen3.8-27B, so that row should be
-re-measured before being quoted as current.
+in [docs/BENCHMARK.md](docs/BENCHMARK.md). The Qwen arm was first run against an abliterated 27B
+checkpoint; re-running it on 8 October 2026 against stock `Qwen/Qwen3.8-27B` gave the same stack row
+(0.796 balanced accuracy, 75 missed) with 96.5% verdict agreement, so the headline stands.
 
 ## Where the checks run
 
@@ -139,6 +139,33 @@ the valves and environment variables are the only coupling.
 Code here is MIT. Granite Guardian 4.1-8B and LettuceDetect v2 are Apache-2.0 from their authors.
 HaluBench (PatronusAI) is CC-BY-NC-2.0 and is not redistributed; `bench/README.md` says how to
 fetch it. The per-item result files are available on request for non-commercial use.
+
+## How to cite
+
+Code is MIT and the models are Apache-2.0, so use any of it as you see fit. If the stack, the
+numbers or the protocol end up in your work, a citation is appreciated. GitHub's "Cite this
+repository" button reads [CITATION.cff](CITATION.cff); the plain form is:
+
+> Norton, B. (2026). *local-groundedness-check: LettuceDetect v2 and Granite Guardian as a measured,
+> on-premises groundedness check for RAG answers and document deliverables* (v1.3.1). Norton Design
+> Lab. https://github.com/NortonDesignLab/local-groundedness-check
+
+BibTeX:
+
+```bibtex
+@software{norton2026groundedness,
+  author  = {Norton, Bradley},
+  title   = {local-groundedness-check: LettuceDetect v2 and Granite Guardian as a measured,
+             on-premises groundedness check for RAG answers and document deliverables},
+  year    = {2026},
+  version = {1.3.1},
+  publisher = {Norton Design Lab},
+  url     = {https://github.com/NortonDesignLab/local-groundedness-check}
+}
+```
+
+Please also cite the detectors themselves: Kovács and Recski (2025) for LettuceDetect
+(arXiv:2502.17125), IBM Research for Granite Guardian, and Patronus AI for HaluBench.
 
 ## Status
 

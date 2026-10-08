@@ -7,7 +7,7 @@ Question: is the big model Brad already runs a better adjudicator than Guardian-
 import json, os, re, time, urllib.request
 
 # Any OpenAI-compatible general model. The n=344 and n=1094 runs used Huihui-Qwen3.8-27B-abliterated (FP8);
-# the slot now serves stock Qwen3.8-27B under the alias "local", so re-measure before quoting the Qwen rows as current.
+# the slot now serves stock Qwen3.8-27B (alias "local"); re-measured 8 Oct 2026 with identical stack results, see docs/BENCHMARK.md v1.3.1.
 URL = os.environ.get("QWEN_URL", "http://10.0.0.72:8000").rstrip("/") + "/v1/chat/completions"
 MODEL = os.environ.get("QWEN_MODEL", "local")
 

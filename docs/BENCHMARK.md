@@ -651,3 +651,29 @@ At n=1094 every estimate is **lower** than at n=344 — the best configuration r
 than 0.803, and LettuceDetect alone drops from 0.691 to 0.648. The larger sample is the more
 trustworthy one, so the earlier figures should be treated as mildly optimistic. Anything quoted
 externally should use the n=1094 numbers.
+
+# v1.3.1: Qwen arm re-measured on the stock checkpoint
+
+The n=344 and n=1094 Qwen rows above were produced against `Huihui-Qwen3.8-27B-abliterated` (FP8),
+the model that happened to be in the slot. On 8 October 2026 the slot served stock `Qwen/Qwen3.8-27B`
+(vLLM, 262k context), so the arm was re-run over the same 1094 items with the same prompt
+(`bench/run_qwen_stock.py`), and both files were re-scored with one script (`bench/analyze_qwen_stock.py`).
+In that script the single malformed Guardian-think verdict counts as "not flagged" rather than
+"unchecked", which is why the Guardian rows read one item off the table above.
+
+| Configuration | abliterated: BA / Rec / Spec / FP / FN | **stock: BA / Rec / Spec / FP / FN** |
+|---|---|---|
+| Guardian-think alone | 0.742 / 0.719 / 0.766 / 127 / 155 | same (Qwen not involved) |
+| Qwen-27B alone | 0.755 / 0.704 / 0.807 / 105 / 163 | **0.757 / 0.715 / 0.799 / 109 / 157** |
+| LettuceDetect AND think | 0.754 / 0.711 / 0.796 / 111 / 159 | same |
+| LettuceDetect AND (think OR Qwen) | 0.794 / 0.860 / 0.727 / 148 / 77 | **0.794 / 0.860 / 0.727 / 148 / 77** |
+| + number check | 0.796 / 0.864 / 0.727 / 148 / 75 | **0.796 / 0.864 / 0.727 / 148 / 75** |
+
+The two Qwen arms agree on 1056 of 1094 verdicts (96.5%); the 38 disagreements cancel out in the
+OR with Guardian, so the shipped configuration's row is identical, item for item. McNemar for adding
+the Qwen adjudicator to LettuceDetect AND think: 37 items right only without it, 82 right only
+with it, chi2 16.27. Per source with stock Qwen: RAGTruth 0.881, halueval 0.905, covidQA 0.934,
+pubmedQA 0.771, FinanceBench 0.710, DROP 0.686. Stock Qwen was also faster: median 4.5 s per
+verdict against 7.2 s for the abliterated FP8 build at the same concurrency of 8.
+
+The caveat that the Qwen row needed re-measuring before being quoted is withdrawn.

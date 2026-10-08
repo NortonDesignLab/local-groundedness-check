@@ -71,3 +71,11 @@ against the configuration without it over these results.
 splitter and confidence extraction used by the Open WebUI filter. `sync_core.py` writes it into
 `../openwebui/guardian_source_check.py` (and any extra standalone files passed as arguments)
 between the `NDL GROUNDCHECK CORE` markers, thinning `calibration_map.json` as it goes.
+
+## Qwen arm on the stock checkpoint (v1.3.1)
+
+```bash
+QWEN_URL=http://host:8000 QWEN_MODEL=qwen3.8-27b python run_qwen_stock.py   # big_qwen_stock.jsonl
+python analyze_qwen_stock.py big_qwen_stock.jsonl                         # final-config table + McNemar
+python analyze_qwen_stock.py big_qwen.jsonl                               # same scoring on the abliterated run
+```

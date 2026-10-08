@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this stack, the benchmark numbers or the protocol, please cite it as below."
+title: "local-groundedness-check: LettuceDetect v2 and Granite Guardian as a measured, on-premises groundedness check for RAG answers and document deliverables"
+type: software
+authors:
+  - family-names: Norton
+    given-names: Bradley
+    affiliation: "Norton Design Lab"
+    email: bradley.norton@nortondesignlab.com
+repository-code: "https://github.com/NortonDesignLab/local-groundedness-check"
+url: "https://github.com/NortonDesignLab/local-groundedness-check"
+license: MIT
+version: "1.3.1"
+date-released: "2026-10-08"
+keywords:
+  - hallucination detection
+  - groundedness
+  - RAG
+  - LettuceDetect
+  - Granite Guardian
+  - HaluBench
+  - on-premises
+abstract: >-
+  Deploy files, an Open WebUI filter, a batch claim checker and a benchmark harness for checking
+  that answers built from retrieved documents are supported by those documents, with no text
+  leaving the operator's machines. LettuceDetect v2 (2B) screens sentences, IBM Granite Guardian
+  4.1-8B judges flagged sentences with the question attached, a general local model adds a second
+  vote, and a deterministic orphan-number rule runs on prose sources. On 1,094 label-balanced
+  HaluBench items the full configuration reaches 0.796 balanced accuracy and misses 75
+  fabrications against 159 for the screen-and-judge pair alone; every component was McNemar-tested.
+references:
+  - type: article
+    title: "LettuceDetect: A Hallucination Detection Framework for RAG Applications"
+    authors:
+      - family-names: Kovács
+        given-names: Ádám
+      - family-names: Recski
+        given-names: Gábor
+    year: 2025
+    url: "https://arxiv.org/abs/2502.17125"
+  - type: software
+    title: "Granite Guardian 4.1-8B"
+    authors:
+      - name: "IBM Research"
+    url: "https://huggingface.co/ibm-granite"
+  - type: dataset
+    title: "HaluBench"
+    authors:
+      - name: "Patronus AI"
+    url: "https://huggingface.co/datasets/PatronusAI/HaluBench"
