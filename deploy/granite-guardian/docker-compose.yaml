@@ -1,0 +1,59 @@
+# granite-guardian-8b
+# Deploy dir: /mnt/4tb/NDL-Docker/granite-guardian-8b/
+# Serves IBM Granite Guardian 4.1-8B (official IBM GGUF, Q8_0 = 8-bit, 8.91 GB, Apache-2.0) with llama.cpp on :8014.
+# Role: groundedness / hallucination judge for finished output (deck, document and spreadsheet builders, ingest audits).
+# It is a judge, not a chat model: keep it out of Open WebUI's model list.
+#
+# Port map (SARA):
+#   :8001 ChromaDB | :8011 Nemotron-3-Embed-8B (5090) | :8013 Qwen3-Reranker-4B (3090) | :8014 this service (5090, moved 2026-10-01)
+#
+# Placement: moved from the RTX 3090 to the RTX 5090 (GPU 0) on 2026-10-01 so the 3090 keeps ~12 GB free
+# for Docling/RapidOCR during book ingest (it ran out of memory with reranker + guardian both there).
+#   guardian  8.3 GiB weights + 2.5 GiB KV (16384 ctx, f16) + buffers   ~11.5 GB
+# 5090 (32 GB) also holds Nemotron embed (~17.4 GB) and the desktop, so headroom is ~2 GB.
+# Reranker stays on the 3090 (~11.3 GB, --gpu-memory-utilization 0.47). Installed 2026-09-19.
+#
+# The model file is pulled once from huggingface.co/ibm-granite/granite-guardian-4.1-8b-GGUF into ./hf-cache.
+
+services:
+  granite-guardian-8b:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: granite-guardian-8b
+    restart: unless-stopped
+    ports:
+      - "8014:8080"
+    volumes:
+      - ./hf-cache:/root/.cache/huggingface   # this llama.cpp build stores -hf downloads in the HF hub cache layout
+    environment:
+      - LLAMA_ARG_HF_REPO=ibm-granite/granite-guardian-4.1-8b-GGUF:Q8_0
+    command: >
+      --host 0.0.0.0
+      --port 8080
+      --alias granite-guardian-4.1-8b
+      -ngl 99
+      -fa on
+      -c 16384
+      --parallel 2
+      --jinja
+      --temp 0
+      --metrics
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]   # RTX 5090, alongside Nemotron embed + desktop; was ["1"] (3090) until 2026-10-01
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 900s   # first start downloads 8.9 GB
+    networks:
+      - default
+
+networks:
+  default:
+    name: ai-network
+    external: true

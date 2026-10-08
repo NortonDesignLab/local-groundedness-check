@@ -1,0 +1,72 @@
+# vLLM Semantic Router (v0.3) - the three blocks that make LettuceDetect v2 fire on the local lane.
+# Excerpt of ~/NDL-Docker/vllm-sr/config.yaml; everything else in that file is unrelated routing.
+
+# ---- 1. global.model_catalog.modules: the HaluGate pipeline with LettuceDetect as the detector ----
+  model_catalog:
+    modules:
+      hallucination_mitigation:
+        enabled: true
+        on_hallucination_detected: annotate
+        # Stage 1, the Sentinel. Gates the whole pipeline: if a prompt scores no_fact_check_needed,
+        # stages 2 and 3 are skipped, so creative and code prompts cost nothing. The paper puts
+        # 40-60% of general traffic on this skip path. threshold is the confidence to call a prompt
+        # factual; 0.65 is the shipped default. This is the same classifier the request-side
+        # fact_check signal reads, so declaring both does not load a second model.
+        fact_check:
+          model_ref: fact_check_classifier
+          model_id: models/mmbert32k-factcheck-classifier-merged
+          threshold: 0.20
+          use_cpu: true
+          use_mmbert_32k: true
+        # Stage 2, the Detector. Token-level check of the answer against the provided context.
+        # min_span_length and min_span_confidence suppress single-token noise; context_window_size
+        # is how many tokens of grounding each span is checked against. NLI filtering hands flagged
+        # spans to stage 3 rather than reporting them raw.
+        detector:
+          model_ref: hallucination_detector
+          backend: endpoint
+          endpoint: http://10.0.0.72:8077/v1
+          model_id: KRLabsOrg/lettucedect-v2-qwen-2b
+          include_explanation: true
+          threshold: 0.82
+        # Stage 3, the Explainer. NLI model that labels each flagged span contradiction vs neutral,
+        # so a header tells you not just where but why. Highest threshold of the three because this
+        # is the label you would act on.
+        explainer:
+          model_ref: hallucination_explainer
+          model_id: models/mom-halugate-explainer
+          threshold: 0.9
+          use_cpu: true
+
+# ---- 2. signals: the request-side fact_check signal (same classifier as the Sentinel) ----
+    fact_check:
+      - name: needs_fact_check
+        description: Prompts making checkable factual claims that should be verified against evidence.
+      - name: no_fact_check_needed
+        description: Creative or opinion-heavy prompts that do not need factual verification.
+
+# ---- 3. decisions: local_factcheck. A signal is only EVALUATED when a considered decision references it.
+#         Without this decision the fact_check signal returned null, FactCheckNeeded=false, and the detector never ran.
+    - name: local_factcheck
+      description: Factual prompts on the local lane. Mirrors local_default model and plugins but references the fact_check signal so the request-side gate evaluates it and the HaluGate/LettuceDetect pipeline actually runs on grounded local answers. Non-factual prompts fall through to local_default. Added 2026-09-19.
+      priority: 150
+      rules:
+        operator: AND
+        conditions:
+          - type: fact_check
+            name: needs_fact_check
+      modelRefs:
+        - model: local/atom
+          use_reasoning: false
+      algorithm:
+        type: static
+      plugins:
+        - type: hallucination
+          configuration:
+            enabled: true
+            use_nli: true
+        - type: router_replay
+          configuration:
+            enabled: true
+            max_records: 20000
+            max_body_bytes: 2048

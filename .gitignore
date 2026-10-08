@@ -1,0 +1,16 @@
+# benchmark data and raw per-item results (HaluBench is CC-BY-NC; not redistributed)
+*.parquet
+*.jsonl
+bench/decomp_subset.json
+bench/hhem/cache/
+*.log
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# editor / backup noise
+*.bak*
+*.swp
+.DS_Store

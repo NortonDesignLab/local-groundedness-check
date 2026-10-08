@@ -1,0 +1,17 @@
+{
+  "question": "What did Study 1 involve and what were the results?",
+  "passages": [
+    "Study 1 recruited 32 undergraduate students (16 women and 16 men) from a large public university. Participants completed a 20-minute negotiation task and were paid $10. The mean settlement price was $4,210 (SD = 380)."
+  ],
+  "claims": [
+    "Study 1 had 32 students, 16 women and 16 men.",
+    "Participants were paid ten dollars for a twenty-minute negotiation exercise.",
+    "The mean settlement price was $4,210 with a standard deviation of 380.",
+    "Participants were recruited from a large public university."
+  ],
+  "controls": [
+    "Study 1 had 48 students, 24 women and 24 men.",
+    "Women negotiated settlements 12 percent higher than men.",
+    "As Zoltners and Sinha (2019) showed, the mean settlement price was $4,210."
+  ]
+}

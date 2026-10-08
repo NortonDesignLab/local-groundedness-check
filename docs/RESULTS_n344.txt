@@ -1,0 +1,50 @@
+====================================================================================================
+OVERALL  (n=344 HaluBench, balanced PASS/FAIL, 6 sources)
+====================================================================================================
+                        n  nulls  bal_acc    acc  recall_FAIL  specificity_PASS  precision_FAIL  f1_FAIL  flag_rate  lat_p50  lat_p95   tp  fp   tn  fn
+arm                                                                                                                                                    
+guardian_nothink_q_A  344      0    0.717  0.718        0.750             0.685           0.714    0.731      0.538     0.58     0.88  132  53  115  44
+guardian_nothink_q_B  344      0    0.720  0.721        0.750             0.690           0.717    0.733      0.535     0.58     0.84  132  52  116  44
+guardian_nothink_noq  344      0    0.660  0.663        0.778             0.542           0.640    0.703      0.622     0.57     0.83  137  77   91  39
+guardian_think_q      344      1    0.746  0.746        0.743             0.750           0.756    0.749      0.501     3.72     6.49  130  42  126  45
+lettucedetect         344      0    0.691  0.698        0.966             0.417           0.634    0.766      0.779     1.03     2.48  170  98   70   6
+
+REPEATABILITY (two identical no-think passes, temp 0, 2 llama.cpp slots)
+  pass-to-pass agreement : 99.709%   disagreements: 1/344
+                                         n  nulls  bal_acc    acc  recall_FAIL  specificity_PASS  precision_FAIL  f1_FAIL  flag_rate lat_p50 lat_p95   tp  fp   tn  fn
+arm                                                                                                                                                                   
+flag-on-EITHER pass (Brad's protocol)  344      0    0.717  0.718         0.75             0.685           0.714    0.731      0.538    None    None  132  53  115  44
+flag-only-if-BOTH passes               344      0    0.720  0.721         0.75             0.690           0.717    0.733      0.535    None    None  132  52  116  44
+
+====================================================================================================
+PER-SOURCE balanced accuracy
+====================================================================================================
+              guardian_nothink_q_A  guardian_nothink_q_B  guardian_nothink_noq  guardian_think_q  lettucedetect
+DROP                         0.467                 0.483                 0.333             0.667          0.517
+FinanceBench                 0.600                 0.600                 0.517             0.650          0.533
+RAGTruth                     0.600                 0.600                 0.650             0.583          0.883
+covidQA                      0.953                 0.953                 0.887             0.952          0.953
+halueval                     0.967                 0.967                 0.867             0.917          0.850
+pubmedQA                     0.783                 0.783                 0.783             0.767          0.517
+
+NOTE: LettuceDetect v2 was TRAINED on RAGTruth; its RAGTruth column is in-domain.
+pubmedQA                     0.783                 0.783                 0.783             0.767          0.517
+
+NOTE: LettuceDetect v2 was TRAINED on RAGTruth; its RAGTruth column is in-domain.
+                                                       bal_acc  recall_FAIL  specificity_PASS  precision_FAIL  f1_FAIL  flag_rate   tp   fp   tn  fn
+arm                                                                                                                                                 
+guardian_nothink_q_A                                     0.717        0.749             0.685           0.712    0.730      0.536  131   53  115  44
+guardian_think_q                                         0.746        0.743             0.750           0.756    0.749      0.501  130   42  126  45
+lettucedetect                                            0.691        0.966             0.417           0.633    0.765      0.778  169   98   70   6
+AND: lettuce prefilter -> guardian(think) adjudicates    0.764        0.737             0.792           0.787    0.761      0.478  129   35  133  46
+OR: flag if either                                       0.673        0.971             0.375           0.618    0.756      0.802  170  105   63   5
+AND: guardian think & no-think                           0.739        0.686             0.792           0.774    0.727      0.452  120   35  133  55
+
+McNemar think vs no-think: think-only-correct=28, nothink-only-correct=18, chi2_cc=1.76
+  (chi2 > 3.84 => p<0.05)
+
+COST PER 1000 CLAIMS (local, GPU-seconds only)
+  guardian_nothink      9.7 GPU-min serial,   4.8 min at 2 slots
+  guardian_think       62.0 GPU-min serial,  31.0 min at 2 slots
+  lettucedetect        17.2 GPU-min serial,   8.6 min at 2 slots
+  jev (hosted)       $0.042/MTok in; ~700 tok/claim => ~$0.03 per 1000 claims (vendor list price, UNVERIFIED)

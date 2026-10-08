@@ -1,0 +1,46 @@
+# granite-guardian-8b  (moved from SARA's RTX 5090 to the DGX Spark on 2026-10-07)
+# Deploy dir: /home/brad3k/NDL-Docker/granite-guardian-8b/   (Spark)
+# Serves IBM Granite Guardian 4.1-8B (official IBM GGUF, Q8_0, 8.9 GB, Apache-2.0) with llama.cpp on :8014.
+# Role: groundedness / hallucination judge for finished output. It is a judge, not a chat model:
+# keep it out of Open WebUI's model list.
+#
+# Reach it from:  SARA / LAN -> http://10.0.0.153:8014     ATOM (direct 200G link) -> http://192.168.100.2:8014
+# Memory: ~11.5 GB of the Spark's 121 GB; coexists with the Qwen cluster worker (0.50) or DeepSeek at 0.75.
+# Weights live in the shared model store (~/NDL-Docker/shared/hf, Spark-local NVMe), copied from SARA's cache.
+# Same image + flags as the SARA deployment; the only differences are the explicit -m path (no HF lookup at
+# start) and no GPU device pinning (the Spark has one GPU).
+
+services:
+  granite-guardian-8b:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: granite-guardian-8b
+    restart: unless-stopped
+    ports:
+      - "8014:8080"
+    volumes:
+      - /home/brad3k/NDL-Docker/shared/hf:/root/.cache/huggingface
+    command: >
+      -m /root/.cache/huggingface/hub/models--ibm-granite--granite-guardian-4.1-8b-GGUF/snapshots/bc78f0995361543a70438fe44a60bb7613fed2f0/granite-guardian-4.1-8b-Q8_0.gguf
+      --host 0.0.0.0
+      --port 8080
+      --alias granite-guardian-4.1-8b
+      -ngl 99
+      -fa on
+      -c 16384
+      --parallel 2
+      --jinja
+      --temp 0
+      --metrics
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s

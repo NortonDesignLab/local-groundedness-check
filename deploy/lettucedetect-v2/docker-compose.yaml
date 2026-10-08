@@ -1,0 +1,44 @@
+# lettucedetect-v2 - hallucination span detector for vLLM Semantic Router (replaces the in-process HaluGate detector).
+# STAGED 2026-09-19, NOT STARTED. Start only when no bench is swapping the :8000 slot:
+#   cd ~/NDL-Docker/lettucedetect-v2 && docker compose up -d
+# then switch the router:  cd ~/NDL-Docker/vllm-sr && cp config.yaml config.yaml.bak-pre-lettucedetect \
+#   && cp config.lettucedetect.yaml config.yaml && docker compose up -d --force-recreate envoy-config router
+# Not a chat model: it is NOT part of the :8000 slot / `local` alias contract. The router calls http://10.0.0.72:8077/v1.
+# Memory: 0.07 x 121 GB = ~8.5 GB (4.5 GB BF16 weights + KV). The BF16 27B profile asks for 0.85; check it still starts with this resident.
+services:
+  lettucedetect-v2:
+    image: vllm/vllm-openai:latest
+    container_name: lettucedetect-v2
+    restart: unless-stopped
+    ipc: host
+    ports:
+      - "8077:8077"
+    volumes:
+      - /home/brad3k/.cache/huggingface:/root/.cache/huggingface
+      - /home/brad3k/.cache/vllm:/root/.cache/vllm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command:
+      - "KRLabsOrg/lettucedect-v2-qwen-2b"
+      - "--served-model-name"
+      - "KRLabsOrg/lettucedect-v2-qwen-2b"
+      - "--port"
+      - "8077"
+      - "--max-model-len"
+      - "32768"
+      - "--gpu-memory-utilization"
+      - "0.07"
+      - "--max-num-seqs"
+      - "8"
+      - "--enable-prefix-caching"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen(\"http://localhost:8077/health\", timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 300s
